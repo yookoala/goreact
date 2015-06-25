@@ -9,8 +9,11 @@
     <div id="main"></div>
     <script type="text/jsx" src="js/main.jsx"></script>
     <script type="text/jsx">
+      var data = {
+        "hello": "data world"
+      }
       React.render(
-        <CommentBox />,
+        <CommentBox data={data} />,
         document.getElementById('main')
       );
     </script>

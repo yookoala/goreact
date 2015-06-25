@@ -4,6 +4,7 @@ import (
 	"github.com/mamaar/risotto/generator"
 	"github.com/robertkrimen/otto"
 
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -78,12 +79,23 @@ func Require(fn string) (js string, err error) {
 	return
 }
 
-// RenderElemToString takes the name of an element and renders it to HTML
-func RenderElemToString(elm string, scripts ...string) (output string, err error) {
+// JSON marshals input parameters map into json string
+func JSON(m interface{}) (out string, err error) {
+	b, err := json.Marshal(m)
+	if err != nil {
+		return
+	}
+	out = string(b)
+	return
+}
+
+// RenderElemToString renders a ReactElement to string to HTML string
+func RenderElemToString(elm string, jsonIn string, scripts ...string) (output string, err error) {
 	var script string
 	script += strings.Join(scripts, "\n")
 	script += fmt.Sprintf(
-		"var _result = React.renderToString(React.createFactory(%s)({}))", elm)
+		"var _result = React.renderToString(React.createFactory(%s)(%s))",
+		elm, jsonIn)
 
 	vm := otto.New()
 	_, err = vm.Run(script)
