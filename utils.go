@@ -2,6 +2,7 @@ package goreact
 
 import (
 	"github.com/mamaar/risotto/generator"
+	"github.com/robertkrimen/otto"
 
 	"fmt"
 	"io/ioutil"
@@ -71,9 +72,22 @@ func renderReact(fns ...string) (output string) {
 	return
 }
 
-func renderReactElem(elm, out string, fns ...string) (output string) {
-	output += renderReact(fns...)
-	output += fmt.Sprintf("var %s = React.renderToString(React.createFactory(%s)({}))",
-		out, elm)
-	return
+func renderElemToString(elm string, fns ...string) (output string, err error) {
+	var script string
+	script += renderReact(fns...)
+	script += fmt.Sprintf(
+		"var _result = React.renderToString(React.createFactory(%s)({}))", elm)
+
+	vm := otto.New()
+	_, err = vm.Run(script)
+	if err != nil {
+		return
+	}
+
+	val, err := vm.Get("_result")
+	if err != nil {
+		return
+	}
+
+	return val.ToString()
 }
