@@ -5,7 +5,9 @@ import (
 )
 
 func TestJs(t *testing.T) {
-	html, err := renderElemToString("CommentBox", "_test/js/main.js")
+	html, err := RenderElemToString("CommentBox",
+		MustStr(RequireReact("_test/js/react-0.13.3.js")),
+		MustStr(Require("_test/js/main.js")))
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -16,7 +18,9 @@ func TestJs(t *testing.T) {
 }
 
 func TestJsx(t *testing.T) {
-	html, err := renderElemToString("CommentBox", "_test/js/main.jsx")
+	html, err := RenderElemToString("CommentBox",
+		MustStr(RequireReact("_test/js/react-0.13.3.js")),
+		MustStr(Require("_test/js/main.jsx")))
 	if err != nil {
 		t.Error(err.Error())
 	}
